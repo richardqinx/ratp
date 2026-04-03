@@ -16,27 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "atp/simplify/subsumption.h"
+#include "atp/simplify/tautology.h"
+#include <cstddef>
 
-
-namespace atp {
-
-    bool subsumes(const Clause& general, const Clause& specific) {
-        if (general.size() > specific.size()) {
-            return false;
-        }
-        for (const auto& lit_g : general.literals) {
-            bool found = false;
-            for (const auto& lit_s : specific.literals) {
-                if (lit_g.atom == lit_s.atom && lit_g.is_positive == lit_s.is_positive) {
-                    found = true;
-                    break;
+ namespace atp {
+    bool isTautology(const Clause& clause) {
+        for (size_t i = 0; i < clause.size(); ++i) {
+            for (size_t j = i + 1; j < clause.size(); ++j) {
+                if (clause.literals[i].atom == clause.literals[j].atom && 
+                    clause.literals[i].is_positive != clause.literals[j].is_positive) {
+                    return true;
                 }
             }
-            if (!found) {
-                return false;
-            }
         }
-        return true;
+        return false;
     }
 }
